@@ -46,6 +46,7 @@ def main():
     target_file_length = getlines(target_name)
 
     try:
+        output_file = open("output.txt", "w+")
         while(ipcount < target_file_length):
             # Get target from the file, THEN the user in the subloop
             target = target_file.readline()
@@ -67,17 +68,19 @@ def main():
                     totals.append(total)
 
                 # placeholder output - final should give only statistically-significant results (ie usernames we care about)
-                print("Time for " + user + "on " + target + ": " + str(total))
+                # print("Writing data to output file")
+                output_file.write("Time for " + user + "on " + target + ": " + str(total) + "\n")
 
                 # results array call goes here for later use
                 uscount += 1
-            get_average_response_times(totals)
+            get_average_response_times(output_file, totals)
             uscount = 0 # reset uscount, so we can enter the test again with another IP address
             user_file.seek(0) # reset our place in the users file
             ipcount += 1
     except KeyboardInterrupt:
         print("Keyboard Interrupt found.  Exiting")
         sys.exit(0)
+    print("Test complete!  Check output.txt for your results.")
 
 def getlines(filename):
     with open(filename) as f:
@@ -85,8 +88,7 @@ def getlines(filename):
             pass
     return i + 1
 
-def get_average_response_times(times):
-
+def get_average_response_times(my_file, times):
 
     aggregate = 0.0
     count = 0
@@ -95,8 +97,8 @@ def get_average_response_times(times):
         aggregate += number
         count += 1
     avg = aggregate / count
-    print ("Average (mean) of this host's responses: " + str(avg))
-    print ("Values above " + str((avg * 1.1)) + " or below " + str((avg * 0.9)) + " may be worth testing further!")
+    my_file.write("Average (mean) of this host's responses: " + str(avg))
+    my_file.write("\nValues above " + str((avg * 1.1)) + " or below " + str((avg * 0.9)) + " may be worth testing further!\n")
 
 
 main()
