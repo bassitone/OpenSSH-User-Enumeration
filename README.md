@@ -7,4 +7,5 @@ I'm just making it work in cases where you have a bunch (dozens/hundreds)
 of servers to test ASAP.
 
 Inputs: users.txt, IPv4\_targets.txt
+
 Output: output.txt
