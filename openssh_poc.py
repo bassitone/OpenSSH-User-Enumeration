@@ -73,7 +73,7 @@ def main():
 
                 # results array call goes here for later use
                 uscount += 1
-            get_average_response_times(output_file, totals)
+            get_average_response_times(output_file, totals, target)
             uscount = 0 # reset uscount, so we can enter the test again with another IP address
             user_file.seek(0) # reset our place in the users file
             ipcount += 1
@@ -88,7 +88,7 @@ def getlines(filename):
             pass
     return i + 1
 
-def get_average_response_times(my_file, times):
+def get_average_response_times(my_file, times, host):
 
     aggregate = 0.0
     count = 0
@@ -97,8 +97,8 @@ def get_average_response_times(my_file, times):
         aggregate += number
         count += 1
     avg = aggregate / count
-    my_file.write("Average (mean) of this host's responses: " + str(avg))
+    host_average = format(("Average (mean) of responses from " + host + ": ") + str(avg) + "\n")
+    my_file.write(host_average)
     my_file.write("\nValues above " + str((avg * 1.1)) + " or below " + str((avg * 0.9)) + " may be worth testing further!\n")
-
 
 main()
